@@ -20,6 +20,9 @@ namespace MultiplayerPinball.Networking
         public Transform[] playerSpawnPositions;
         public Camera[] playerCameras;
 
+        [Header("Player Stats")] 
+        public List<int> playersHealthValues = new List<int>();
+
         
         
         private void Awake()
@@ -65,6 +68,26 @@ namespace MultiplayerPinball.Networking
             players = FindObjectsOfType<PlayerController>().ToList();
             players = players.OrderBy(x => x.playerIndex).ToList();
             OnPlayerListFilled?.Invoke(players);
+            AddPlayerHealthValues();
+        }
+
+        private void AddPlayerHealthValues()
+        {
+            foreach (PlayerController player in players)
+            {
+                playersHealthValues.Add(player.playerHealth);
+            }
+        }
+
+        public void TakePlayerHealth(int playerIndex)
+        {
+            playersHealthValues[playerIndex] -= 1;
+
+            if (playersHealthValues[playerIndex] <= 0)
+            {
+                string msg = $"Player {playerIndex} lost!";
+                Debug.Log(msg); 
+            }
         }
     
         #region Photon Callbacks

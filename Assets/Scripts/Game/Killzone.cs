@@ -23,6 +23,7 @@ public class Killzone : MonoBehaviour
 
     private void NetworkManagerOnOnPlayerListFilled(List<PlayerController> players)
     {
+        if (playerIndex + 1 > players.Count) return;
         connectedPlayer = players[playerIndex]; 
     }
 
@@ -34,7 +35,7 @@ public class Killzone : MonoBehaviour
             
 
             if (!connectedPlayer) return;
-            connectedPlayer.TakeHealth(1);
+            NetworkManager.Instance.TakePlayerHealth(connectedPlayer.playerIndex);
         }
     }
 }

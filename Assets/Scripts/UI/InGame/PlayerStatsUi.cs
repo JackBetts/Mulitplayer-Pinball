@@ -25,7 +25,11 @@ public class PlayerStatsUi : MonoBehaviour
         playerControllers = new List<PlayerController>(players);
         for (int i = 0; i < playerStats.Length; i++)
         {
-            playerStats[i].Init(playerControllers[i]);
+            if (i + 1 > playerControllers.Count) return;
+            if (playerControllers[i])
+            {
+                playerStats[i].Init(playerControllers[i]);   
+            }
         }
     }
 }

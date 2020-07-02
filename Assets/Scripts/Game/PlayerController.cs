@@ -13,7 +13,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine) return;
         
         Vector3 currentPosition = transform.position;
-        Vector3 desiredPosition = InputManager.Instance.GetNewPlayerPosition(currentPosition); 
+        Vector3 desiredPosition = InputManager.Instance.GetNewPlayerPosition(currentPosition);
+
+        Debug.Log("Desired Position: " + desiredPosition); 
         
         transform.DOMove(desiredPosition, moveSpeed); 
     }

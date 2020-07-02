@@ -23,8 +23,6 @@ namespace MultiplayerPinball.Networking
         [Header("Player Stats")] 
         public List<int> playersHealthValues = new List<int>();
 
-        
-        
         private void Awake()
         {
             if (!Instance)
@@ -57,7 +55,9 @@ namespace MultiplayerPinball.Networking
                 
                 ActivatePlayerCamera(playerIndex);
                 
+                InputManager.Instance.SetSpawnPointRef(GetSpawnPointFromIndex(playerIndex));
                 PlayerController newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, GetSpawnPosition(playerIndex), Quaternion.identity).GetComponent<PlayerController>();
+                
                 newPlayer.playerIndex = playerIndex; 
                 Invoke(nameof(LookForPlayers), 2f);
             }
@@ -80,6 +80,20 @@ namespace MultiplayerPinball.Networking
         }
 
         public void TakePlayerHealth(int playerIndex)
+        {
+            playersHealthValues[playerIndex] -= 1;
+
+            if (playersHealthValues[playerIndex] <= 0)
+            {
+                string msg = $"Player {playerIndex} lost!";
+                Debug.Log(msg); 
+            }
+            
+            photonView.RPC("TakePlayerHealthRPC", RpcTarget.Others, playerIndex);
+        }
+
+        [PunRPC]
+        private void TakePlayerHealthRPC(int playerIndex)
         {
             playersHealthValues[playerIndex] -= 1;
 
@@ -123,6 +137,11 @@ namespace MultiplayerPinball.Networking
         {
             InputManager.Instance.CalculateMoveAxis(playerId);
             return playerSpawnPositions[playerId].position;
+        }
+
+        private PlayerSpawnPoint GetSpawnPointFromIndex(int playerIndex)
+        {
+            return playerSpawnPositions[playerIndex].GetComponent<PlayerSpawnPoint>(); 
         }
     }
 }

@@ -95,9 +95,12 @@ public class InputManager : MonoBehaviour
         return Vector2.zero;
     }
 
+    public void SetSpawnPointRef(PlayerSpawnPoint point) => spawnPointRef = point; 
+    
     public Vector3 GetNewPlayerPosition(Vector3 currentPosition)
     {
-        Vector3 newPosition = currentPosition;
+        if (!spawnPointRef) return Vector3.zero;
+        Vector3 newPosition = spawnPointRef.transform.position;
 
         switch (currentMoveAxis)
         {
